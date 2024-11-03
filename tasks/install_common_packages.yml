@@ -1,0 +1,36 @@
+---
+- name: Install common packages
+  become: yes
+  pacman:
+    name:
+      - base-devel
+      - discord
+      - flatpak
+      - freecad
+      - git
+      - jq
+      - kicad
+      - kicad-library
+      - kicad-library-3d
+      - kodi
+      - obs-studio
+      - pcsc-tools
+      - python-pexpect
+      - steam
+      - vim
+      - vivaldi
+      - vivaldi-ffmpeg-codecs
+      - yakuake
+      - yubico-pam
+      - yubikey-manager
+      - yubikey-personalization-gui
+      - yubioath-desktop
+      - zip
+    state: present
+
+- name: Enable and start the pcsc service
+  become: yes
+  systemd:
+    name: pcscd
+    enabled: true
+    state: started

@@ -1,0 +1,14 @@
+---
+- name: Add GPG and SSH configuration to .bashrc
+  blockinfile:
+    path: "{{ ansible_env.HOME }}/.bashrc"
+    insertbefore: "#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - GPG and SSH configuration"
+    block: |
+      export GPG_TTY="$(tty)"
+      export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+      killall gpg-agent &> /dev/null
+      gpg-connect-agent reloadagent /bye
+    state: present
+    prepend_newline: true
+    append_newline: true

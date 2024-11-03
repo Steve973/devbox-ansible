@@ -1,0 +1,6 @@
+---
+- name: Update system
+  become: yes
+  pacman:
+    update_cache: yes
+    upgrade: yes

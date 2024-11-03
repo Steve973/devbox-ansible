@@ -1,0 +1,25 @@
+---
+- name: Download and install SDKMAN
+  shell: |
+    curl -s "https://get.sdkman.io" | bash
+
+- name: Ensure SDKMAN is loaded in the user's environment
+  lineinfile:
+    path: "{{ ansible_env.HOME }}/.bashrc"
+    line: 'source "{{ ansible_env.HOME }}/.sdkman/bin/sdkman-init.sh"'
+    state: present
+
+- name: Install Java 17 using SDKMAN
+  shell: |
+    source "{{ ansible_env.HOME }}/.sdkman/bin/sdkman-init.sh"
+    sdk install java 17.0.11-tem
+
+- name: Install Gradle using SDKMAN
+  shell: |
+    source "{{ ansible_env.HOME }}/.sdkman/bin/sdkman-init.sh"
+    sdk install gradle
+
+- name: Install Maven using SDKMAN
+  shell: |
+    source "{{ ansible_env.HOME }}/.sdkman/bin/sdkman-init.sh"
+    sdk install maven

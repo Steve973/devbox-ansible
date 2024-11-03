@@ -1,0 +1,42 @@
+---
+- name: Get the latest Balena Etcher linux zip file download URL
+  shell: |
+    curl -H "Accept: application/vnd.github+json" -s https://api.github.com/repos/balena-io/etcher/releases/latest | jq -r '.assets[] | select(.name | startswith("balenaEtcher-linux-x64")) | .browser_download_url'
+  register: balena_etcher_download_url
+
+- name: Create installation directory
+  become: yes
+  file:
+    path: "/opt/balena-etcher"
+    state: directory
+
+- name: Download the latest Balena Etcher ZIP file
+  get_url:
+    url: "{{ balena_etcher_download_url.stdout }}"
+    dest: "/tmp/balena-etcher.zip"
+
+- name: Unzip the downloaded Balena Etcher ZIP file
+  command:
+    cmd: unzip -o /tmp/balena-etcher.zip
+    chdir: /tmp
+
+- name: Copy extracted Balena Etcher content to /opt/balena-etcher
+  become: yes
+  copy:
+    src: /tmp/balenaEtcher-linux-x64/
+    dest: /opt/balena-etcher/
+    remote_src: yes
+
+- name: Make the executable files in the extracted directory executable
+  become: yes
+  command: chmod +x /opt/balena-etcher/balena-etcher
+
+- name: Create a symlink to run Balena Etcher easily
+  become: yes
+  command: ln -s /opt/balena-etcher/balena-etcher /usr/local/bin/balena-etcher
+  args:
+    creates: /usr/local/bin/balena-etcher
+
+- name: Notify user about how to run Balena Etcher
+  debug:
+    msg: "You can run Balena Etcher by executing 'balena-etcher' in your terminal."

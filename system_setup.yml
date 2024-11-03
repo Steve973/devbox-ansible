@@ -1,0 +1,42 @@
+---
+- name: System Setup
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+
+  tasks:
+    - name: Update system
+      include_tasks: tasks/update_system.yml
+      tags: system_update
+
+    - name: Install common packages
+      include_tasks: tasks/install_common_packages.yml
+      tags: common_packages
+
+    - name: Install AUR packages
+      include_tasks: tasks/install_aur_packages.yml
+      tags: aur_packages
+
+    - name: Install NVIDIA drivers
+      include_tasks: tasks/install_nvidia_drivers.yml
+      tags: nvidia_drivers
+
+    - name: Download and install SDKMAN
+      include_tasks: tasks/install_sdkman_and_tools.yml
+      tags: sdkman
+
+    - name: Download and install JetBrains Toolbox
+      include_tasks: tasks/install_jetbrains_toolbox.yml
+      tags: jetbrains_toolbox
+
+    - name: Download and install Balena Etcher
+      include_tasks: tasks/install_balena_etcher.yml
+      tags: balena_etcher
+
+    - name: Configure GnuPG
+      include_tasks: tasks/configure_gnupg.yml
+      tags: gnupg
+
+    - name: Notify user of reboot
+      become: yes
+      command: /usr/bin/eos-reboot-required3

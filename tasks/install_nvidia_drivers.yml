@@ -1,0 +1,12 @@
+---
+- name: Prompt for sudo password
+  pause:
+    prompt: "Please enter your sudo password"
+    echo: no
+  register: sudo_password
+
+- name: Run nvidia-inst script
+  expect:
+    command: nvidia-inst
+    responses:
+      'Password:': "{{ sudo_password.user_input }}"

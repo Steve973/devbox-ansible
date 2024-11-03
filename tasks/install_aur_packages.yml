@@ -1,0 +1,7 @@
+---
+- name: Install AUR packages (with yay)
+  aur:
+    name:
+      - bauh
+      - visual-studio-code-bin
+    state: present
