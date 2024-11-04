@@ -15,6 +15,7 @@
       - kodi
       - obs-studio
       - pcsc-tools
+      - pcsclite
       - python-pexpect
       - steam
       - vim

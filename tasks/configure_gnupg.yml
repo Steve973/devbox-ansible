@@ -5,10 +5,56 @@
     insertbefore: "#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!"
     marker: "# {mark} ANSIBLE MANAGED BLOCK - GPG and SSH configuration"
     block: |
-      export GPG_TTY="$(tty)"
-      export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
-      killall gpg-agent &> /dev/null
-      gpg-connect-agent reloadagent /bye
+      SSH_AGENT_PID=""
+      SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/gnupg/S.gpg-agent.ssh"
+      export GPG_TTY=$(tty)
+      gpg-connect-agent updatestartuptty /bye > /dev/null
     state: present
     prepend_newline: true
     append_newline: true
+
+- name: Ensure .config/systemd/user directory exists
+  file:
+    path: "{{ ansible_env.HOME }}/.config/systemd/user"
+    state: directory
+    mode: '0755'
+
+- name: Create user-specific gpg-agent.service file
+  copy:
+    dest: "{{ ansible_env.HOME }}/.config/systemd/user/gpg-agent.service.d/override.conf"
+    content: |
+      [Service]
+      ExecStart=
+      ExecStart=/usr/bin/gpg-agent --daemon --enable-ssh-support --options {{ ansible_env.HOME }}/.gnupg/gpg-agent.conf
+    mode: '0644'
+
+- name: Reload systemd daemon after adding the user gpg-agent service file
+  systemd_service:
+    daemon_reload: yes
+    scope: user
+  ignore_errors: yes
+
+- name: Kill existing gpg-agent
+  command: killall gpg-agent
+  ignore_errors: yes
+
+- name: Start user gpg-agent
+  systemd_service:
+    name: gpg-agent
+    state: started
+    scope: user
+  ignore_errors: yes
+
+- name: Verify gpg-agent is running with custom configuration
+  shell: ps aux | grep gpg-agent | grep -v grep
+  register: gpg_agent_status
+  changed_when: false
+  failed_when: "'--options ' + ansible_env.HOME + '/.gnupg/gpg-agent.conf' not in gpg_agent_status.stdout"
+
+- name: Handle gpg-agent configuration failure
+  fail:
+    msg: |
+      gpg-agent is not running with the custom configuration.
+      Current gpg-agent status:
+      {{ gpg_agent_status.stdout_lines | to_nice_yaml }}
+  when: gpg_agent_status is failed
