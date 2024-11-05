@@ -34,6 +34,11 @@
   command:
     cmd: chmod +x "{{ ansible_env.HOME }}/.local/share/JetBrains/Toolbox/jetbrains-toolbox"
 
-- name: Notify user to run JetBrains Toolbox setup
-  debug:
-    msg: "JetBrains Toolbox has been downloaded and extracted. Please run '{{ ansible_env.HOME }}/.local/share/JetBrains/Toolbox/jetbrains-toolbox' to complete the setup."
+- name: Run JetBrains Toolbox
+  command:
+    cmd: "{{ ansible_env.HOME }}/.local/share/JetBrains/Toolbox/jetbrains-toolbox &"
+
+- name: Wait for jetbrains-toolbox CLI to become available
+  wait_for:
+    path: "{{ ansible_env.HOME }}/.local/share/JetBrains/Toolbox/bin/jetbrains-toolbox"
+    timeout: 30

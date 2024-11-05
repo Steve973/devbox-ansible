@@ -1,0 +1,10 @@
+---
+- name: Install IntelliJ IDEA plugins
+  command: "{{ ansible_env.HOME }}/.local/share/JetBrains/Toolbox/scripts/idea installPlugins {{ item }}"
+  loop:
+    - ir.msdehghan.plugins.ansible
+    - com.github.copilot
+    - PythonCore
+    - Pythonid
+  register: plugin_install_result
+  changed_when: plugin_install_result.rc == 0

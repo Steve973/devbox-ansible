@@ -1,0 +1,16 @@
+---
+- name: Install VS Code extensions
+  command: "/usr/bin/code --install-extension {{ item }}"
+  loop:
+    - vscjava.vscode-java-pack
+    - ciantic.keymapceditor-vsc
+    - ms-python.python
+    - ms-vscode.cpptools
+    - ms-azuretools.vscode-docker
+    - eamodio.gitlens
+    - ms-vscode-remote.remote-containers
+    - github.copilot
+    - github.copilot-chat
+    - redhat.vscode-yaml
+  register: extension_install_result
+  changed_when: extension_install_result.rc == 0

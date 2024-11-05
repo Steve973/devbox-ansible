@@ -1,0 +1,8 @@
+---
+- name: Install IntelliJ IDEA Ultimate via Toolbox
+  command: "{{ ansible_env.HOME }}/.local/share/JetBrains/Toolbox/bin/jetbrains-toolbox install --update intellij-idea-ultimate"
+  register: intellij_install
+  changed_when: intellij_install.rc == 0
+  failed_when:
+    - intellij_install.rc != 0
+    - "'already installed' not in intellij_install.stderr"

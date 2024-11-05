@@ -29,6 +29,18 @@
       include_tasks: tasks/install_jetbrains_toolbox.yml
       tags: jetbrains_toolbox
 
+    - name: Install IntelliJ IDEA
+      include_tasks: tasks/install_intellij_idea.yml
+      tags: intellij_idea
+
+    - name: Install IntelliJ IDEA plugins
+      include_tasks: tasks/install_intellij_idea_plugins.yml
+      tags: intellij_idea_plugins
+
+    - name: Install VS Code extensions
+      include_tasks: tasks/install_vs_code_extensions.yml
+      tags: vs_code_extensions
+
     - name: Download and install Balena Etcher
       include_tasks: tasks/install_balena_etcher.yml
       tags: balena_etcher
@@ -36,6 +48,10 @@
     - name: Configure GnuPG
       include_tasks: tasks/configure_gnupg.yml
       tags: gnupg
+
+    - name: Configure kernel parameters
+      include_tasks: tasks/configure_kernel_params.yml
+      tags: kernel_params
 
     - name: Notify user of reboot
       become: yes

@@ -13,35 +13,39 @@
     prepend_newline: true
     append_newline: true
 
-- name: Stop gpg-agent-ssh.socket
-  systemd_service:
-    name: gpg-agent-ssh.socket
-    state: stopped
-    enabled: false
-    scope: user
-  ignore_errors: yes
-
-- name: Stop gpg-agent-extra.socket
-  systemd_service:
-    name: gpg-agent-extra.socket
-    state: stopped
-    enabled: false
-    scope: user
-  ignore_errors: yes
-
-- name: Stop gpg-agent-browser.socket
-  systemd_service:
-    name: gpg-agent-browser.socket
-    state: stopped
-    enabled: false
-    scope: user
-  ignore_errors: yes
-
-- name: Stop gpg-agent.socket
+- name: Stop gpg-agent socket
   systemd_service:
     name: gpg-agent.socket
     state: stopped
     enabled: false
+    masked: true
+    scope: user
+  ignore_errors: yes
+
+- name: Stop gpg-agent-browser socket
+  systemd_service:
+    name: gpg-agent-browser.socket
+    state: stopped
+    enabled: false
+    masked: true
+    scope: user
+  ignore_errors: yes
+
+- name: Stop gpg-agent-extra socket
+  systemd_service:
+    name: gpg-agent-extra.socket
+    state: stopped
+    enabled: false
+    masked: true
+    scope: user
+  ignore_errors: yes
+
+- name: Stop gpg-agent-ssh socket
+  systemd_service:
+    name: gpg-agent-ssh.socket
+    state: stopped
+    enabled: false
+    masked: true
     scope: user
   ignore_errors: yes
 
@@ -50,6 +54,7 @@
     name: gpg-agent.service
     state: stopped
     enabled: false
+    masked: true
     scope: user
   ignore_errors: yes
 

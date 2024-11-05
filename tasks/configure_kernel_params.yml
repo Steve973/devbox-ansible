@@ -1,0 +1,20 @@
+---
+- name: Check if usbcore.autosuspend is already present
+  command: grep -q "usbcore.autosuspend=-1" /etc/default/grub
+  register: usbcore_autosuspend_present
+  ignore_errors: yes
+  changed_when: false
+
+- name: Edit Kernel Parameters
+  become: yes
+  lineinfile:
+    path: /etc/default/grub
+    regexp: "^GRUB_CMDLINE_LINUX_DEFAULT='(.*)'$"
+    line: "GRUB_CMDLINE_LINUX_DEFAULT='\1 usbcore.autosuspend=-1'"
+    backrefs: yes
+  when: usbcore_autosuspend_present.rc != 0
+
+- name: Update GRUB
+  become: yes
+  command: update-grub
+  when: usbcore_autosuspend_present.rc != 0
